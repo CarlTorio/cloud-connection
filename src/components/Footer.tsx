@@ -1,12 +1,35 @@
 import { motion } from "framer-motion";
-import { Facebook, Instagram, Youtube, Twitter } from "lucide-react";
+import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
 
-  const footerLinks = {
-    Company: ["History", "About Us", "Blogs"],
-    Services: ["Hair Removal", "Anti-Acne Treatment", "Anti-Aging Treatment", "Body Laser", "Facials and Peels", "Slimming and Firming", "Gluta Whitening"],
-    Help: ["Find Your Skin", "Data Privacy", "FAQs"],
+  const footerSections = {
+    Contacts: {
+      type: "contact",
+      items: [
+        { icon: Phone, text: "+63 912 345 6789", href: "tel:+639123456789" },
+        { icon: Mail, text: "info@hilome.com", href: "mailto:info@hilome.com" },
+        { icon: MapPin, text: "Makati City, Philippines", href: "#" },
+      ]
+    },
+    Services: {
+      type: "links",
+      items: [
+        { text: "Anti-Aging Treatment", href: "#" },
+        { text: "Facial & Diamond Peel", href: "#" },
+        { text: "Laser Treatment", href: "#" },
+        { text: "Slimming & Firming", href: "#" },
+      ]
+    },
+    Help: {
+      type: "mixed",
+      items: [
+        { text: "Our Story", href: "/our-story", isRoute: true },
+        { text: "Data Privacy", href: "#" },
+        { text: "FAQs", href: "#" },
+      ]
+    },
   };
 
   const socialLinks = [
@@ -42,7 +65,7 @@ const Footer = () => {
           </div>
 
           {/* Links */}
-          {Object.entries(footerLinks).map(([title, links], sectionIndex) => (
+          {Object.entries(footerSections).map(([title, section], sectionIndex) => (
             <motion.div
               key={title}
               initial={{ opacity: 0, y: 20 }}
@@ -52,16 +75,39 @@ const Footer = () => {
             >
               <h4 className="font-semibold text-xs md:text-sm mb-2 md:mb-3">{title}</h4>
               <ul className="space-y-1 md:space-y-1.5">
-                {links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-accent-foreground/70 hover:text-accent-foreground transition-colors text-[10px] md:text-xs"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                ))}
+                {section.type === "contact" ? (
+                  section.items.map((item) => (
+                    <li key={item.text} className="flex items-center gap-2">
+                      <item.icon className="w-3 h-3 text-accent-foreground/70" />
+                      <a
+                        href={item.href}
+                        className="text-accent-foreground/70 hover:text-accent-foreground transition-colors text-[10px] md:text-xs"
+                      >
+                        {item.text}
+                      </a>
+                    </li>
+                  ))
+                ) : (
+                  section.items.map((item) => (
+                    <li key={item.text}>
+                      {item.isRoute ? (
+                        <Link
+                          to={item.href}
+                          className="text-accent-foreground/70 hover:text-accent-foreground transition-colors text-[10px] md:text-xs"
+                        >
+                          {item.text}
+                        </Link>
+                      ) : (
+                        <a
+                          href={item.href}
+                          className="text-accent-foreground/70 hover:text-accent-foreground transition-colors text-[10px] md:text-xs"
+                        >
+                          {item.text}
+                        </a>
+                      )}
+                    </li>
+                  ))
+                )}
               </ul>
             </motion.div>
           ))}
