@@ -105,7 +105,7 @@ const Header = () => {
             <div className="hidden md:flex items-center gap-4 mr-12 md:mr-24">
               <Button 
                 className="gradient-accent text-accent-foreground hover:opacity-90 transition-opacity"
-                onClick={() => navigate("/book-consultation")}
+                onClick={() => navigate("/membership")}
               >
                 Join Now
               </Button>
@@ -154,7 +154,7 @@ const Header = () => {
                   className="w-full mt-6 gradient-accent text-accent-foreground"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
-                    navigate("/book-consultation");
+                    navigate("/membership");
                   }}
                 >
                   Join Now
