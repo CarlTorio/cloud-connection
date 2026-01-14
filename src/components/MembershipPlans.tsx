@@ -67,15 +67,23 @@ const cardVariants = {
     opacity: 0, 
     y: 60,
     rotateX: -15,
+    scaleY: 0.6,
+    originY: 0,
   },
   visible: (index: number) => ({
     opacity: 1,
     y: 0,
     rotateX: 0,
+    scaleY: 1,
     transition: {
       duration: 0.8,
       delay: 0.2 + index * 0.2,
       ease: [0.25, 0.46, 0.45, 0.94] as const,
+      scaleY: {
+        duration: 0.6,
+        delay: 0.3 + index * 0.2,
+        ease: "easeOut",
+      },
     },
   }),
 };
