@@ -78,29 +78,29 @@ const ThankYou = () => {
           opacity: 0
         }} animate={{
           opacity: 1
-        }} className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        }} className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
               <motion.div initial={{
             scale: 0.9,
             opacity: 0
           }} animate={{
             scale: 1,
             opacity: 1
-          }} className="bg-background rounded-2xl p-6 max-w-sm w-full shadow-elevated text-center">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-10 h-10 text-primary" />
+          }} className="bg-background rounded-xl p-5 max-w-xs w-full shadow-elevated text-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <CheckCircle className="w-7 h-7 text-primary" />
                 </div>
-                <h2 className="font-display text-2xl text-foreground mb-2">
+                <h2 className="font-display text-xl text-foreground mb-1">
                   Booking Confirmed!
                 </h2>
-                <p className="text-foreground/70 text-sm mb-6">
-                  Would you like to download your booking receipt? You can show this to our staff when you arrive.
+                <p className="text-foreground/70 text-xs mb-4">
+                  Download your receipt to show our staff when you arrive.
                 </p>
-                <div className="flex flex-col gap-3">
-                  <Button onClick={handleDownload} disabled={isDownloading} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 flex items-center justify-center gap-2">
+                <div className="flex flex-col gap-2">
+                  <Button onClick={handleDownload} disabled={isDownloading} size="sm" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 flex items-center justify-center gap-2">
                     <Download className="w-4 h-4" />
                     {isDownloading ? "Downloading..." : "Download Receipt"}
                   </Button>
-                  <Button onClick={() => setShowDownloadPrompt(false)} variant="ghost" className="w-full text-foreground/60">
+                  <Button onClick={() => setShowDownloadPrompt(false)} variant="ghost" size="sm" className="w-full text-foreground/60">
                     Maybe Later
                   </Button>
                 </div>
