@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 const allServices = [
@@ -12,110 +12,18 @@ const allServices = [
   { title: "Facials", description: "Advanced skincare treatments for a radiant complexion.", longDescription: "Achieve a radiant complexion with our advanced facial treatments. Using premium products and cutting-edge techniques to address your unique skin concerns.", image: "https://i.imgur.com/bXaHFzI.png" },
 ];
 
-// Service card component with scroll-linked animation
-const ServiceCard = ({ 
-  service, 
-  index, 
-  containerRef 
-}: { 
-  service: typeof allServices[0]; 
-  index: number; 
-  containerRef: React.RefObject<HTMLElement>;
-}) => {
-  const colIndex = index % 4;
-  const rowIndex = Math.floor(index / 4);
-  
-  // Get initial X position based on column position
-  const getInitialX = () => {
-    if (colIndex === 0) return -100;
-    if (colIndex === 1) return -50;
-    if (colIndex === 2) return 50;
-    return 100;
-  };
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "center center"]
-  });
-
-  // Stagger based on row and column
-  const staggerOffset = rowIndex * 0.15 + colIndex * 0.05;
-  
-  // Create transforms that depend on scroll progress
-  const opacity = useTransform(
-    scrollYProgress, 
-    [0 + staggerOffset, 0.3 + staggerOffset], 
-    [0, 1]
-  );
-  const x = useTransform(
-    scrollYProgress, 
-    [0 + staggerOffset, 0.3 + staggerOffset], 
-    [getInitialX(), 0]
-  );
-  const y = useTransform(
-    scrollYProgress, 
-    [0 + staggerOffset, 0.3 + staggerOffset], 
-    [-30, 0]
-  );
-
-  return (
-    <motion.div
-      style={{ opacity, x, y }}
-      className="group relative overflow-hidden rounded-lg md:rounded-xl aspect-[4/5] cursor-pointer"
-      whileHover={{ y: -8 }}
-    >
-      <img
-        src={service.image}
-        alt={service.title}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-      />
-      
-      {/* Default gradient - bottom half */}
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/50 via-25% to-transparent to-50% group-hover:opacity-0 transition-opacity duration-300" />
-      
-      {/* Hover gradient - full cover */}
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/60 to-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
-      {/* Default text position - bottom */}
-      <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3 text-center group-hover:opacity-0 transition-opacity duration-300">
-        <h3 className="font-display text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold text-accent-foreground mb-0.5">
-          {service.title}
-        </h3>
-        <p className="text-[8px] sm:text-[9px] md:text-xs text-accent-foreground/80 leading-tight line-clamp-2">
-          {service.description}
-        </p>
-      </div>
-      
-      {/* Hover text position - centered */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center p-2 md:p-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <h3 className="font-display text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold text-accent-foreground mb-1">
-          {service.title}
-        </h3>
-        <p className="text-[8px] sm:text-[9px] md:text-xs text-accent-foreground/90 leading-tight px-1">
-          {service.longDescription}
-        </p>
-      </div>
-    </motion.div>
-  );
-};
-
 const ServicesGrid = () => {
-  const ref = useRef<HTMLElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "center center"]
-  });
-
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.2], [30, 0]);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
     <section id="services" className="py-10 md:py-14 bg-cream" ref={ref}>
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
-          style={{ opacity: headerOpacity, y: headerY }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
           className="text-center mb-6 md:mb-8 max-w-2xl mx-auto"
         >
           <h2 className="font-display text-xl md:text-2xl lg:text-3xl font-semibold text-foreground mb-2 md:mb-3">
@@ -128,14 +36,60 @@ const ServicesGrid = () => {
 
         {/* Services Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 lg:gap-4 max-w-4xl mx-auto">
-          {allServices.map((service, index) => (
-            <ServiceCard 
-              key={service.title} 
-              service={service} 
-              index={index} 
-              containerRef={ref} 
-            />
-          ))}
+          {allServices.map((service, index) => {
+            return (
+              <motion.div
+                key={service.title}
+                initial={{ 
+                  opacity: 0, 
+                  y: -60
+                }}
+                animate={isInView ? { 
+                  opacity: 1, 
+                  y: 0
+                } : {}}
+                transition={{ 
+                  duration: 2.5, 
+                  delay: index * 0.25,
+                  ease: [0.25, 0.1, 0.25, 1]
+                }}
+                className="group relative overflow-hidden rounded-lg md:rounded-xl aspect-[4/5] cursor-pointer"
+                whileHover={{ y: -8 }}
+              >
+                <img
+                  src={service.image}
+                  alt={service.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                
+                {/* Default gradient - bottom half */}
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/50 via-25% to-transparent to-50% group-hover:opacity-0 transition-opacity duration-300" />
+                
+                {/* Hover gradient - full cover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/60 to-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                
+                {/* Default text position - bottom */}
+                <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3 text-center group-hover:opacity-0 transition-opacity duration-300">
+                  <h3 className="font-display text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold text-accent-foreground mb-0.5">
+                    {service.title}
+                  </h3>
+                  <p className="text-[8px] sm:text-[9px] md:text-xs text-accent-foreground/80 leading-tight line-clamp-2">
+                    {service.description}
+                  </p>
+                </div>
+                
+                {/* Hover text position - centered */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-2 md:p-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <h3 className="font-display text-[10px] sm:text-xs md:text-sm lg:text-base font-semibold text-accent-foreground mb-1">
+                    {service.title}
+                  </h3>
+                  <p className="text-[8px] sm:text-[9px] md:text-xs text-accent-foreground/90 leading-tight px-1">
+                    {service.longDescription}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
